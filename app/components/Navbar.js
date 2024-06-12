@@ -35,7 +35,7 @@ const Navbar = () => {
                         alt="logo"
                         style={{ width: 45, height: 'auto', marginRight: 4 }}
                     />
-                    <Button color="inherit" onClick={() => router.push('/')}>Quinielas</Button>
+                    <Button color="inherit" onClick={() => router.push('/')}>Rifas</Button>
                 </Box>
 
                 {user ? (
@@ -57,16 +57,13 @@ const Navbar = () => {
                             open={Boolean(anchorEl)}
                             onClose={handleMenuClose}
                         >
-                            <MenuItem onClick={handleMenuClose}>
-                                <Button color="inherit" onClick={() => router.push('/quinielas')}>Quinielas</Button>
-                            </MenuItem>
-                            <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                            <MenuItem onClick={handleSignOut}>Salir</MenuItem>
                         </Menu>
                     </div>
                 ) : (
                     <>
-                        <Button color="inherit" onClick={() => router.push('/login')}>Sign In</Button>
-                        <Button color="inherit" onClick={() => router.push('/register')}>Register</Button>
+                        <Button color="inherit" onClick={() => router.push('/login')}>Entrar</Button>
+                        <Button color="inherit" onClick={() => router.push('/register')}>Crear Cuenta</Button>
                     </>
                 )}
             </Toolbar>

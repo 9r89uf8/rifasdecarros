@@ -5,7 +5,7 @@ import { Container, Typography, Card, CardContent, Button, CircularProgress, Ale
 import { useRouter } from 'next/navigation';
 import {fetchPosts, deletePost} from "@/app/services/postService";
 import { useStore } from '@/app/store/store';
-
+import Carousel from "@/app/components/carousel";
 
 const Posts = () => {
     const posts = useStore((state) => state.posts);
@@ -40,6 +40,9 @@ const Posts = () => {
                         <Typography variant="body2" component="p">
                             {post.content}
                         </Typography>
+                        {post.images && post.images.length > 0 && (
+                            <Carousel images={post.images} />
+                        )}
                         <Button onClick={() => router.push(`/edit-post/${post.id}`)} variant="contained" color="primary">
                             Edit
                         </Button>

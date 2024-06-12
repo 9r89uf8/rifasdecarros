@@ -28,4 +28,4 @@ Disallow: /video
 Allow: /
 
 
-Sitemap: https://www.quinielasligamx.com/sitemap.xml
+Sitemap: https://www.rifasdecarros.com/sitemap.xml
