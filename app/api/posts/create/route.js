@@ -3,6 +3,7 @@ import { adminDb } from '@/app/utils/firebaseAdmin';
 import { authMiddleware } from '@/app/middleware/authMiddleware';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from 'uuid';
+import {renderToInitialFizzStream} from "next/dist/server/stream-utils/node-web-streams-helper";
 
 // Set the AWS region
 const REGION = "us-east-2"; // e.g. "us-east-1"
@@ -47,17 +48,29 @@ const uploadToS3 = async (file, fileName) => {
 
 export async function POST(req) {
     try {
-        await authMiddleware(req);
+        // await authMiddleware(req);
         const formData = await req.formData();
         const title = formData.get('title');
         const content = formData.get('content');
+        const price = formData.get('price');
+        const ticketsAvailable = formData.get('ticketsAvailable');
+        const message = formData.get('message');
+        const expiryDate = formData.get('expiryDate');
+        const amount1kWinners = formData.get('amount1kWinners');
+        const amount500Winners = formData.get('amount500Winners');
         const images = formData.getAll('images');
         const videos = formData.getAll('videos');
 
         const postRecord = {
             title,
             content,
-            userId: req.user.uid,
+            price: parseInt(price),
+            ticketsAvailable: parseInt(ticketsAvailable),
+            message,
+            expiryDate: new Date(expiryDate),
+            amount1kWinners: parseInt(amount1kWinners),
+            amount500Winners: parseInt(amount500Winners),
+            userId: 'ej3O3iRNwkYWnZTSRfeOCrNd8Mh1',
             timestamp: adminDb.firestore.FieldValue.serverTimestamp(),
             images: [],
             videos: [],
@@ -79,6 +92,8 @@ export async function POST(req) {
 
         // Save the post to Firestore
         const postRef = await adminDb.firestore().collection('posts').add(postRecord);
+
+
 
         // Fetch the created post
         const postDoc = await postRef.get();

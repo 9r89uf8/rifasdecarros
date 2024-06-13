@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box, Grid } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { createPost } from '@/app/services/postService';
-import { v4 as uuidv4 } from 'uuid';
 
 const CreatePost = () => {
     const [postData, setPostData] = useState({
@@ -12,6 +11,14 @@ const CreatePost = () => {
         content: '',
         images: [],
         videos: [],
+        price: '',
+        dealPrice: '',
+        dealQuantity: '',
+        ticketsAvailable: '',
+        message: '',
+        expiryDate: '',
+        amount1kWinners: '',
+        amount500Winners: '',
     });
     const [selectedImages, setSelectedImages] = useState([]);
     const [selectedVideos, setSelectedVideos] = useState([]);
@@ -49,6 +56,15 @@ const CreatePost = () => {
 
         formData.append('title', postData.title);
         formData.append('content', postData.content);
+        formData.append('price', postData.price);
+        formData.append('dealPrice', postData.dealPrice);
+        formData.append('dealQuantity', postData.dealQuantity);
+        formData.append('ticketsAvailable', postData.ticketsAvailable);
+        formData.append('message', postData.message);
+        formData.append('expiryDate', postData.expiryDate);
+        formData.append('amount1kWinners', postData.amount1kWinners);
+        formData.append('amount500Winners', postData.amount500Winners);
+
         postData.images.forEach((image, index) => {
             formData.append('images', image);
         });
@@ -89,6 +105,78 @@ const CreatePost = () => {
                     margin="normal"
                     multiline
                     rows={4}
+                />
+                <TextField
+                    name="price"
+                    label="Price"
+                    type="number"
+                    value={postData.price}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="dealPrice"
+                    label="dealPrice"
+                    type="number"
+                    value={postData.dealPrice}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="dealQuantity"
+                    label="dealQuantity"
+                    type="number"
+                    value={postData.dealQuantity}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="ticketsAvailable"
+                    label="Tickets Available"
+                    type="number"
+                    value={postData.ticketsAvailable}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="message"
+                    label="Message"
+                    value={postData.message}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="expiryDate"
+                    label="Expiry Date"
+                    type="date"
+                    value={postData.expiryDate}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{ shrink: true }}
+                />
+                <TextField
+                    name="amount1kWinners"
+                    label="Amount $1k Winners"
+                    type="number"
+                    value={postData.amount1kWinners}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                />
+                <TextField
+                    name="amount500Winners"
+                    label="Amount $500 Winners"
+                    type="number"
+                    value={postData.amount500Winners}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
                 />
                 <Box sx={{ mb: 2 }}>
                     <input
@@ -141,5 +229,6 @@ const CreatePost = () => {
 };
 
 export default CreatePost;
+
 
 
