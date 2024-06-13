@@ -25,9 +25,10 @@ const Posts = () => {
     const router = useRouter();
 
     useEffect(() => {
-        if (!posts) {
-            fetchPosts();
+        const loadPost = async () => {
+            await fetchPosts()
         }
+        loadPost();
     }, []);
 
     const handleDelete = async (id) => {
