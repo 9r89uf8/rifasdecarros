@@ -77,7 +77,7 @@ const RegisterPage = () => {
     return (
         <>
             <div style={{textAlign: "center", margin: '-25px auto -25px auto'}}>
-                <img src="https://chicagocarhelp.s3.us-east-2.amazonaws.com/Quinielas+(3).png" alt="logo" style={{width: 230, height: "auto"}}/>
+                <img src="https://chicagocarhelp.s3.us-east-2.amazonaws.com/RIFas+(6).png" alt="logo" style={{width: 230, height: "auto"}}/>
             </div>
 
             <Box style={{height:"100vh"}} display="flex" justifyContent="start" alignItems="center" flexDirection="column">
@@ -191,10 +191,10 @@ const RegisterPage = () => {
                     </CardContent>
                 </GlassCard>
 
-                <GlassCard elevation={4}>
-                    <img src="https://chicagocarhelp.s3.us-east-2.amazonaws.com/Quinielas+(1).png" alt="logo" style={{width: 45, height: "auto"}}/>
+                <GlassCard elevation={4} style={{margin: '10px 20px 0px 20px'}}>
+                    <img src="https://chicagocarhelp.s3.us-east-2.amazonaws.com/RIFas+(3).png" alt="logo" style={{width: 45, height: "auto"}}/>
                     <Typography style={{fontSize:'14px'}}>
-                        Copyright © 2020-2024 QuinielasLigaMx. Reservados todos los derechos.
+                        Copyright © 2018-2025 Rifasdecarros. Reservados todos los derechos.
                     </Typography>
 
 
