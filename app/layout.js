@@ -3,22 +3,19 @@ import React from 'react';
 import Navbar from "@/app/components/Navbar";
 import FloatingNavbar from "@/app/components/FloatingNavbar";
 import Notifications from "@/app/components/Notifications";
-import Head from 'next/head';
 import './styles/globals.css';
 
 const Layout = ({ children }) => {
   return (
       <html lang="es">
       <head>
-          <Head>
-              <title>Rifas de Autos en USA - Gana Autos de Lujo con Nuestras Rifas Exclusivas</title>
-              <meta name="description" content="Participa en nuestras rifas de carros en los Estados Unidos y gana autos de lujo. ¡Únete ahora y ten la oportunidad de conducir el auto de tus sueños!" />
-              <meta name="keywords" content="rifas de autos, USA, ganar autos, rifas de autos de lujo, sorteos de autos, concursos de autos" />
-              <link rel="manifest" href="/manifest.json" />
-              <link rel="icon" href="/favicon.ico" />
-              <meta name="robots" content="index, follow" />
-              <meta name="theme-color" content="#000000" />
-          </Head>
+          <title>Rifas de Autos en USA - Gana Autos de Lujo con Nuestras Rifas Exclusivas</title>
+          <meta name="description" content="Participa en nuestras rifas de carros en los Estados Unidos y gana autos de lujo. ¡Únete ahora y ten la oportunidad de conducir el auto de tus sueños!" />
+          <meta name="keywords" content="rifas de autos, USA, ganar autos, rifas de autos de lujo, sorteos de autos, concursos de autos" />
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="icon" href="/favicon.ico" />
+          <meta name="robots" content="index, follow" />
+          <meta name="theme-color" content="#000000" />
       </head>
       <body>
 
