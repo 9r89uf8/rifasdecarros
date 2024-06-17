@@ -12,96 +12,72 @@ export async function POST(req) {
     try {
         const session = await stripe.checkout.sessions.retrieve(session_id);
 
-        if (session.payment_status === 'paid') {
-            const userId = session.metadata.userId;
-            const jornadaId = session.metadata.jornadaId;
+        const sessionRef = adminDb.firestore().collection('sessions').doc(session_id);
+        const userId = session.metadata.userId;
+        const postId = session.metadata.postId;
+        const ticketTotal = session.metadata.ticketTotal;
 
-            const quinielasRef = adminDb.firestore().collection('quiniela');
-            const quinielasSnapshot = await quinielasRef
-                .where('paid', '==', false)
-                .where('jornadaId', '==', jornadaId) // Filter for active jornadas
-                .where('user', '==', userId)
-                .orderBy('timestamp', 'desc') // Ensure you have an index for this query in Firestore
-                .get();
+        await adminDb.firestore().runTransaction(async (transaction) => {
+            // Perform all reads first
+            const sessionDoc = await transaction.get(sessionRef);
+            const userRef = adminDb.firestore().collection('users').doc(userId);
+            const userDoc = await transaction.get(userRef);
+            const purchasesRef = userRef.collection('purchases').doc(postId);
+            const purchaseDoc = await transaction.get(purchasesRef);
 
-            if (quinielasSnapshot.empty) {
-                res.status(404).json({ message: 'No active jornadas found.' });
-                return;
+            if (sessionDoc.exists && sessionDoc.data().processed) {
+                return NextResponse.json({ success: true });
             }
 
-            // Prepare a batch write
-            let batch = adminDb.firestore().batch();
+            if (!sessionDoc.exists) {
+                transaction.set(sessionRef, {
+                    processed: false,
+                    payment_status: session.payment_status,
+                    created_at: adminDb.firestore.FieldValue.serverTimestamp(),
+                });
+            }
 
-            quinielasSnapshot.docs.forEach(doc => {
-                let docRef = quinielasRef.doc(doc.id); // Get a reference to the document
-                batch.update(docRef, { paid: true }); // Update the 'paid' field to true
-            });
+            if (session.payment_status !== 'paid' || (sessionDoc.exists && sessionDoc.data().processed)) {
+                throw new Error('Session not paid or already processed');
+            }
 
-            // Commit the batch
-            await batch.commit();
-
-            // After successful update of quinielas, update the user's quinielas amount
-            const userRef = adminDb.firestore().collection('users').doc(userId);
-            // Update user's quinielas amount to the length of the updated quinielas
-            await userRef.update({ userQuinielasAmount: quinielasSnapshot.size, jornadaId: jornadaId });
-
-            // After successful update, create the updated quinielas array
-            const updatedQuinielas = quinielasSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                paid: true // Set paid to true as it's now updated
-            }));
-
-
-            const userDoc = await adminDb
-                .firestore()
-                .collection('users')
-                .doc(userId)
-                .get();
-
+            if (!userDoc.exists) {
+                throw new Error('User not found');
+            }
 
             const userData = userDoc.data();
 
-            const jornadaDocRef = adminDb.firestore().collection('jornada').doc(jornadaId);
-            const jornadaSnapshot = await jornadaDocRef.get();
-            const jornada = jornadaSnapshot.data();
-            const quinielas = quinielasSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-            let price = 0
-            let total = 0
-            let totalString = ''
-            if(userData.country==='US'){
-                price = jornada.price
-                total = quinielas.length*jornada.price
-                totalString = `${total} Dólares`
-            }else {
-                price = jornada.price*15
-                total = quinielas.length*(jornada.price*15)
-                totalString = `${total} Pesos`
+            // Perform all writes after reads
+            const participantsCollectionRef = adminDb.firestore().collection('posts').doc(postId).collection('participants');
+            for (let i = 0; i < ticketTotal; i++) {
+                const participantDocRef = participantsCollectionRef.doc();
+                transaction.set(participantDocRef, {
+                    name: userData.name,
+                    uid: userId,
+                });
             }
 
+            if (purchaseDoc.exists) {
+                transaction.update(purchasesRef, {
+                    quantity: adminDb.firestore.FieldValue.increment(parseInt(ticketTotal)),
+                });
+            } else {
+                transaction.set(purchasesRef, {
+                    raffleId: postId,
+                    quantity: parseInt(ticketTotal),
+                    purchaseDate: adminDb.firestore.FieldValue.serverTimestamp(),
+                });
+            }
 
-            const mailgun = require("mailgun-js");
-            const DOMAIN = "quinielasligamx.com";
-            const mg = mailgun({apiKey: process.env.MAILGUN_API, domain: DOMAIN});
-            const data = {
-                from: "Compra <mailgun@quinielasligamx.com>",
-                to: userData.email,
-                subject: "Compra de quinielas",
-                template: "quinielas",
-                'h:X-Mailgun-Variables': JSON.stringify({quinielas: quinielas, id: jornada.id, name: userData.name, quantity: quinielas.length, price: price, total: total, totalString: totalString})
-            };
-            mg.messages().send(data, function (error, body) {
-                console.log(body);
-            });
+            // Mark session as processed
+            transaction.update(sessionRef, { processed: true });
+        });
 
-
-            return NextResponse.json({ success: true });
-        } else {
-            return NextResponse.json({ success: false });
-        }
+        return NextResponse.json({ success: true });
     } catch (error) {
-        console.log(error.message)
+        console.log(error.message);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+
+

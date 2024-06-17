@@ -5,7 +5,7 @@ const HomePage = () => {
     return (
         <div style={styles.container}>
             <div style={styles.header}>
-                <h1 style={styles.mainTitle}>Rifas de Autos en USA</h1>
+                <h1 style={styles.mainTitle}>Rifas de carros</h1>
                 <p style={styles.description}>
                     ¿Sueñas con tener un auto de lujo? Participa en nuestras rifas exclusivas y ten la oportunidad de ganar el auto de tus sueños.
                 </p>

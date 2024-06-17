@@ -13,14 +13,18 @@ const page = () => {
     const status = useStore((state) => state.status);
 
     useEffect(() => {
+        console.log('I ran')
         const queryParams = new URLSearchParams(window.location.search);
         const sessionId = queryParams.get('session_id');
 
         if (sessionId) {
-            verifySession(sessionId);
+            // Ensure verifySession is only called once
+            (async () => {
+                await verifySession(sessionId);
+            })();
         } else {
-            useStripeStore.getState().setStatus('cancel');
-            useStripeStore.getState().setLoading(false);
+            useStore.getState().setStatus('cancel');
+            useStore.getState().setLoading(false);
         }
     }, []);
 

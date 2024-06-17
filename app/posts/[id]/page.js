@@ -5,6 +5,8 @@ import { useRouter, useParams } from 'next/navigation';
 import { Container, Typography, Card, CardContent, Button, Grid, Box, List, ListItem, ListItemText } from '@mui/material';
 import { fetchPostById } from '@/app/services/postService';
 import Carousel from '@/app/components/carousel';
+import CheckoutButton from "@/app/components/CheckoutButton";
+import { useStore } from '@/app/store/store';
 import { styled } from '@mui/material/styles';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 
@@ -52,6 +54,7 @@ const WinnerListItem = styled(ListItem)(({ theme, prizetype }) => {
 const Post = () => {
     const { id } = useParams();
     const [post, setPost] = useState(null);
+    const user = useStore((state) => state.user);
 
     useEffect(() => {
         if (id) {
@@ -150,29 +153,31 @@ const Post = () => {
                             <Typography variant="h5" color="textSecondary" sx={{ marginBottom: '0.5rem', textAlign: 'center' }}>
                                 ${post.price} por 1 Boleto
                             </Typography>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                onClick={() => alert(`Purchasing 1 ticket for post with id: ${id}`)}
-                                sx={{ marginBottom: '1rem' }}
-                            >
-                                Comprar 1 Boleto
-                            </Button>
+                            {/*<Button*/}
+                            {/*    variant="contained"*/}
+                            {/*    color="primary"*/}
+                            {/*    fullWidth*/}
+                            {/*    onClick={() => alert(`Purchasing 1 ticket for post with id: ${id}`)}*/}
+                            {/*    sx={{ marginBottom: '1rem' }}*/}
+                            {/*>*/}
+                            {/*    Comprar 1 Boleto*/}
+                            {/*</Button>*/}
+                            <CheckoutButton quantity={1} price={post.price} country={user?user.country:null} user={user?user.uid:null} raffleId={post.id} />
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Typography variant="h5" color="textSecondary" sx={{ marginBottom: '0.5rem', textAlign: 'center' }}>
                                 ${post.dealPrice} por {post.dealQuantity} Boletos
                             </Typography>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                fullWidth
-                                onClick={() => alert(`Purchasing ${post.dealQuantity} tickets for post with id: ${id}`)}
-                                sx={{ marginBottom: '1rem' }}
-                            >
-                                Comprar {post.dealQuantity} Boletos
-                            </Button>
+                            {/*<Button*/}
+                            {/*    variant="contained"*/}
+                            {/*    color="primary"*/}
+                            {/*    fullWidth*/}
+                            {/*    onClick={() => alert(`Purchasing ${post.dealQuantity} tickets for post with id: ${id}`)}*/}
+                            {/*    sx={{ marginBottom: '1rem' }}*/}
+                            {/*>*/}
+                            {/*    Comprar {post.dealQuantity} Boletos*/}
+                            {/*</Button>*/}
+                            <CheckoutButton quantity={post.dealQuantity} price={post.dealPrice} country={user?user.country:null} user={user?user.uid:null} raffleId={post.id} />
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="body2" color="textSecondary" textAlign="center">
